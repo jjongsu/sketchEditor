@@ -1,4 +1,4 @@
-import { createBrowserRouter, Link, Navigate, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { lazy } from "react";
 const FabricPage = lazy(() => import("./pages/fabricEditor"));
 const KonvaPage = lazy(() => import("./pages/konvaEditor"));
