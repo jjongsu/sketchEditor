@@ -1,4 +1,4 @@
-import { ChangeEventHandler, MouseEventHandler, useEffect, useState } from "react";
+import { ChangeEventHandler, MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { canvasAtom, popoverAtom, targetAtom } from "../store/atoms.ts";
 import { fabric } from "fabric";
@@ -12,6 +12,7 @@ export default function ContextBackgroundMenu({ x, y }: { x: number; y: number }
     const [targetData, setTargetData] = useState<{ id: string; text: string; file?: string }>({ id: uuid(), text: "" });
     const setPopover = useSetAtom(popoverAtom);
     const setTarget = useSetAtom(targetAtom);
+    const contextRef = useRef<HTMLDivElement>(null);
 
     const closePopover = () => {
         setTarget(null);
@@ -76,8 +77,57 @@ export default function ContextBackgroundMenu({ x, y }: { x: number; y: number }
         };
     }, [targetData.file]);
 
+    // popup된 영역에 이미지 드래그로 넣는 방식 적용
+    useEffect(() => {
+        if (!contextRef.current) return;
+
+        const dragenter: (this: HTMLDivElement, ev: DragEvent) => void = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        };
+
+        const dragover: (this: HTMLDivElement, ev: DragEvent) => void = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        };
+
+        const drag: (this: HTMLDivElement, ev: DragEvent) => void = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const dt = e.dataTransfer;
+            const file = dt?.files?.[0];
+            if (!file) return;
+
+            const _url = window.URL || window.webkitURL;
+            const imageId = uuid();
+
+            const imageElement = document.createElement("img");
+            imageElement.src = _url.createObjectURL(file);
+            imageElement.id = imageId;
+
+            imageElement.onload = () => {
+                document.body.appendChild(imageElement);
+                window.sessionStorage.setItem(imageId, imageElement.src);
+                setTargetData((prev) => ({ ...prev, file: imageId }));
+            };
+        };
+
+        const dropbox = contextRef.current;
+
+        dropbox.addEventListener("dragenter", dragenter, false);
+        dropbox.addEventListener("dragover", dragover, false);
+        dropbox.addEventListener("drop", drag, false);
+
+        return () => {
+            dropbox.removeEventListener("dragenter", dragenter, false);
+            dropbox.removeEventListener("dragover", dragover, false);
+            dropbox.removeEventListener("drop", drag, false);
+        };
+    }, []);
+
     return (
-        <div style={{ left: x, top: y }} className={`absolute flex flex-col gap-2 rounded-2xl bg-amber-50 p-2`}>
+        <div ref={contextRef} style={{ left: x, top: y }} className={`absolute flex flex-col gap-2 rounded-2xl bg-amber-50 p-2`}>
             <p>popup</p>
             <textarea
                 className={"w-full resize-none"}
