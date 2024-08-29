@@ -3,6 +3,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { canvasAtom, popoverAtom, targetAtom } from "../store/atoms.ts";
 import { fabric } from "fabric";
 import { v4 as uuid } from "uuid";
+import { useSpeechRecognition } from "../hooks";
 
 /**
  * [TODO] : image 여러 개 가능하도록 수정(png/jpg/jpeg 형식만 가능)
@@ -13,6 +14,11 @@ export default function ContextBackgroundMenu({ x, y }: { x: number; y: number }
     const setPopover = useSetAtom(popoverAtom);
     const setTarget = useSetAtom(targetAtom);
     const contextRef = useRef<HTMLDivElement>(null);
+    const onSpeechText = (text: string) => {
+        console.log("result text : ", text);
+        setTargetData((prev) => ({ ...prev, text: prev.text + text }));
+    };
+    const { handleStart, handleStop } = useSpeechRecognition({ onSpeechText });
 
     const closePopover = () => {
         setTarget(null);
@@ -71,13 +77,14 @@ export default function ContextBackgroundMenu({ x, y }: { x: number; y: number }
     // document 위에 그린 image 제거
     useEffect(() => {
         return () => {
+            handleStop();
             if (!targetData?.file) return;
             const imageElement = document.getElementById(targetData.file);
             imageElement?.remove();
         };
-    }, [targetData.file]);
+    }, [handleStop, targetData.file]);
 
-    // popup된 영역에 이미지 드래그로 넣는 방식 적용
+    // popup 영역에 이미지를 드래그해서 넣는 방식 적용
     useEffect(() => {
         if (!contextRef.current) return;
 
@@ -139,6 +146,9 @@ export default function ContextBackgroundMenu({ x, y }: { x: number; y: number }
                 inputMode={"text"}
             ></textarea>
             <input type={"file"} id={"file-input"} name="file-input" accept="image/png, image/jpeg" onChange={handleFile} />
+            <button className={"rounded-2xl hover:bg-blue-400"} onClick={handleStart}>
+                STT start!
+            </button>
             <button className={"rounded-2xl hover:bg-amber-100"} onClick={handleSave}>
                 save
             </button>
