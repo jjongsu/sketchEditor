@@ -1,1 +1,1 @@
-export { default } from "./KonvaEditor.tsx";
+export { default } from "./KonvaEditor";

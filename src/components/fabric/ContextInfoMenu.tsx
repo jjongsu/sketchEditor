@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { canvasAtom, popoverAtom, targetAtom } from "../store/atoms.ts";
+import { canvasAtom, popoverAtom, targetAtom } from "../../store/atoms.ts";
 import { ChangeEventHandler, MouseEventHandler, useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { useAtomValue, useSetAtom } from "jotai/index";

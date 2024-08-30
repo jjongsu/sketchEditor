@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useAtom, useSetAtom } from "jotai";
 import { backgroundImage } from "../../assets/images";
 import { canvasAtom, popoverAtom, targetAtom } from "../../store/atoms";
-import { ContextBackgroundMenu, ContextInfoMenu } from "../../components";
+import { ContextBackgroundMenu, ContextInfoMenu } from "../../components/fabric";
 
 export default function Fabric() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
