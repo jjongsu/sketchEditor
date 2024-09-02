@@ -1,7 +1,7 @@
 import { Stage, Layer, Star, Rect } from "react-konva";
 import { useState } from "react";
 import { KonvaNodeEvents } from "react-konva/ReactKonvaCore";
-import KonvaImage from "../../components/konva/KonvaImage.tsx";
+import KonvaImage from "./components/KonvaImage.tsx";
 
 function generateShapes() {
     return [...Array(10)].map((_, i) => ({

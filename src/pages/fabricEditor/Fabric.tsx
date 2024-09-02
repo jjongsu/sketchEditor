@@ -3,7 +3,9 @@ import { useEffect, useRef } from "react";
 import { useAtom, useSetAtom } from "jotai";
 import { backgroundImage } from "../../assets/images";
 import { canvasAtom, popoverAtom, targetAtom } from "../../store/atoms";
-import { ContextBackgroundMenu, ContextInfoMenu } from "../../components/fabric";
+import { ContextBackgroundMenu, ContextInfoMenu } from "./components";
+import FabricSaveBtn from "./components/FabricSaveBtn.tsx";
+import useCanvasEvent from "./hooks/useCanvasEvent.tsx";
 
 export default function Fabric() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -11,6 +13,7 @@ export default function Fabric() {
     const [canvas, setCanvas] = useAtom(canvasAtom);
     const [popover, setPopover] = useAtom(popoverAtom);
     const setTarget = useSetAtom(targetAtom);
+    const { changeMode } = useCanvasEvent();
 
     useEffect(() => {
         if (!canvasRef.current || canvas) return;
@@ -32,16 +35,9 @@ export default function Fabric() {
             });
             image.setCoords();
             _canvas.add(image);
-            // _canvas.add(new fabric.Rect({ width: 100, height: 100, fill: "blue" }));
             setCanvas(_canvas);
         });
     }, [setCanvas, canvas, setPopover]);
-
-    // useEffect(() => {
-    //     const clickHandler = () => setPopover(null);
-    //     window.addEventListener("click", clickHandler);
-    //     return () => window.removeEventListener("click", clickHandler);
-    // }, []);
 
     useEffect(() => {
         const backgroundDiv = backgroundRef.current;
@@ -56,7 +52,11 @@ export default function Fabric() {
     return (
         <div id="canvas-container" className={"relative"} onContextMenu={(e) => e.preventDefault()}>
             fabric editor
-            <canvas ref={canvasRef} width={`${1080}px`} height={`${800}px`}></canvas>
+            <FabricSaveBtn />
+            <button className="ml-2 w-[200px] rounded-2xl bg-amber-50 hover:bg-amber-400 hover:text-white" onClick={changeMode}>
+                change editor mode!!
+            </button>
+            <canvas ref={canvasRef} width={`${1080}px`} height={`${800}px`} />
             {popover && <div ref={backgroundRef} className={`absolute left-0 top-0 h-full w-full bg-transparent`} />}
             {popover?.type === "background" && <ContextBackgroundMenu x={popover.x} y={popover.y} />}
             {popover?.type === "information" && <ContextInfoMenu x={popover.x} y={popover.y} />}

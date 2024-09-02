@@ -1,9 +1,9 @@
 import { ChangeEventHandler, MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { canvasAtom, popoverAtom, targetAtom } from "../../store/atoms.ts";
+import { canvasAtom, popoverAtom, targetAtom } from "../../../store/atoms.ts";
 import { fabric } from "fabric";
 import { v4 as uuid } from "uuid";
-import { useSpeechRecognition } from "../../hooks";
+import { useSpeechRecognition } from "../../../hooks";
 
 /**
  * [TODO] : image 여러 개 가능하도록 수정(png/jpg/jpeg 형식만 가능)
