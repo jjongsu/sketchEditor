@@ -47,6 +47,11 @@ export default function ContextBackgroundMenu({ x, y }: { x: number; y: number }
             }
         });
 
+        infoText.on("mousedblclick", (e) => {
+            setTarget(infoText);
+            setPopover({ x: e.target?.left ?? 0, y: e.target?.top ?? 0, type: "information" });
+        });
+
         closePopover();
         canvas?.add(infoText);
         canvas?.renderAll();
