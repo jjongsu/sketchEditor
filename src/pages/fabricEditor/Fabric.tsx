@@ -13,7 +13,7 @@ export default function Fabric() {
     const [canvas, setCanvas] = useAtom(canvasAtom);
     const [popover, setPopover] = useAtom(popoverAtom);
     const setTarget = useSetAtom(targetAtom);
-    const { changeMode } = useCanvasEvent();
+    const { changeMode, canvasMode } = useCanvasEvent();
 
     useEffect(() => {
         if (!canvasRef.current || canvas) return;
@@ -54,11 +54,15 @@ export default function Fabric() {
 
     return (
         <div id="canvas-container" className={"relative"} onContextMenu={(e) => e.preventDefault()}>
-            fabric editor
-            <FabricSaveBtn />
-            <button className="ml-2 w-[200px] rounded-2xl bg-amber-50 hover:bg-amber-400 hover:text-white" onClick={changeMode}>
-                change editor mode!!
-            </button>
+            <div className={"flex gap-2"}>
+                <p>fabric editor</p>
+                <FabricSaveBtn />
+                <p>current mode : {canvasMode}</p>
+                <button className="w-[200px] rounded-2xl bg-amber-50 hover:bg-amber-400 hover:text-white" onClick={changeMode}>
+                    change editor mode!!
+                </button>
+            </div>
+
             <canvas ref={canvasRef} width={`${1080}px`} height={`${800}px`} />
             {popover && <div ref={backgroundRef} className={`absolute left-0 top-0 h-full w-full bg-transparent`} />}
             {popover?.type === "background" && <ContextBackgroundMenu x={popover.x} y={popover.y} />}

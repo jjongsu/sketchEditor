@@ -13,7 +13,7 @@ export default function FabricSaveBtn() {
     }, [editor]);
 
     return (
-        <button className="w-[200px] bg-amber-50 ml-2 rounded-2xl hover:bg-amber-400 hover:text-white" onClick={onClick}>
+        <button className="w-[200px] rounded-2xl bg-amber-50 hover:bg-amber-400 hover:text-white" onClick={onClick}>
             fabric editor save!!
         </button>
     );

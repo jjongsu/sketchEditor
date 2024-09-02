@@ -25,28 +25,29 @@ export default function useCanvasEvent() {
     useEffect(() => {
         if (!canvas) return;
 
-        let pointer: { x: number; y: number } | null = null;
-
-        const handleMouseDown = (e: fabric.IEvent<MouseEvent>) => {
-            if (!e.target || e.target.name !== "backgroundImage" || e.button !== 1 || !e.pointer) {
-                pointer = null;
-                return;
-            }
-            const { x, y } = e.pointer;
-            pointer = { x, y };
-        };
-
         const handleMouseUp = (e: fabric.IEvent<MouseEvent>) => {
             const drawingPath = canvas.getObjects("path")?.[0] as fabric.Path | undefined;
-            if (!e.target || e.button !== 1 || !pointer || e.isClick || !drawingPath) {
-                pointer = null;
+
+            if (!e.target || e.button !== 1 || e.isClick || !drawingPath) {
                 return;
             }
 
-            const attr = drawingPath.getBoundingRect(true);
+            const pathList = drawingPath.path ?? [];
+            const _position1 = (pathList?.[0] ?? [0, 0]).toString().split(",");
+            const position1 = _position1.slice(_position1.length - 2).map(Number);
+            const _position2 = (pathList?.[pathList.length - 1] ?? [0, 0]).toString().split(",");
+            const position2 = _position2.slice(_position2.length - 2).map(Number);
+
+            const attr = {
+                left: Math.min(position1[0], position2[0]),
+                top: Math.min(position1[1], position2[1]),
+                width: Math.abs(position1[0] - position2[0]),
+                height: Math.abs(position1[1] - position2[1]),
+            };
+
             canvas.remove(drawingPath);
 
-            // click 판단
+            // 너무 작은 영역인지 확인
             if (attr.width < 10 && attr.height < 10) {
                 canvas.renderAll();
                 return;
@@ -55,14 +56,11 @@ export default function useCanvasEvent() {
 
             canvas.add(rect);
             canvas.renderAll();
-            pointer = null;
         };
 
-        canvas.on("mouse:down", handleMouseDown);
         canvas.on("mouse:up", handleMouseUp);
 
         return () => {
-            canvas.off("mouse:down");
             canvas.off("mouse:up");
         };
     }, [canvas]);

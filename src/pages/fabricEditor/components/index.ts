@@ -1,2 +1,2 @@
-export { default as ContextBackgroundMenu } from "./ContextBackgroundMenu.tsx";
-export { default as ContextInfoMenu } from "./ContextInfoMenu.tsx";
+export { default as ContextBackgroundMenu } from "./ContextBackgroundMenu";
+export { default as ContextInfoMenu } from "./ContextInfoMenu";
