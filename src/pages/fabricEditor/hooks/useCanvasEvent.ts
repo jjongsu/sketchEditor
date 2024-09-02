@@ -43,8 +43,6 @@ export default function useCanvasEvent() {
                 return;
             }
 
-            console.log(drawingPath);
-
             const attr = drawingPath.getBoundingRect(true);
             canvas.remove(drawingPath);
 
@@ -53,7 +51,7 @@ export default function useCanvasEvent() {
                 canvas.renderAll();
                 return;
             }
-            const rect = new fabric.Rect({ ...attr });
+            const rect = new fabric.Rect({ ...attr, fill: "transparent", stroke: "#D0EE17", strokeWidth: 5, strokeUniform: true });
 
             canvas.add(rect);
             canvas.renderAll();

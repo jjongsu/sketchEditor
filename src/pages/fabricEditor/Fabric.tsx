@@ -33,6 +33,9 @@ export default function Fabric() {
                     setPopover({ x: e.pointer?.x ?? 0, y: e.pointer?.y ?? 0, type: "background" });
                 }
             });
+            image.on("mousedblclick", (e) => {
+                setPopover({ x: e.pointer?.x ?? 0, y: e.pointer?.y ?? 0, type: "background" });
+            });
             image.setCoords();
             _canvas.add(image);
             setCanvas(_canvas);
