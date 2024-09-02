@@ -1,7 +1,6 @@
 import { useAtomValue } from "jotai";
 import { canvasAtom } from "../../../store/atoms.ts";
 import { useCallback, useEffect, useState } from "react";
-import { IEvent } from "fabric/fabric-impl";
 import { fabric } from "fabric";
 
 export default function useCanvasEvent() {
@@ -28,7 +27,7 @@ export default function useCanvasEvent() {
 
         let pointer: { x: number; y: number } | null = null;
 
-        const handleMouseDown: (e: IEvent<MouseEvent>) => void = (e) => {
+        const handleMouseDown = (e: fabric.IEvent<MouseEvent>) => {
             if (!e.target || e.target.name !== "backgroundImage" || e.button !== 1 || !e.pointer) {
                 pointer = null;
                 return;
@@ -37,7 +36,7 @@ export default function useCanvasEvent() {
             pointer = { x, y };
         };
 
-        const handleMouseUp: (e: IEvent<MouseEvent>) => void = (e) => {
+        const handleMouseUp = (e: fabric.IEvent<MouseEvent>) => {
             const drawingPath = canvas.getObjects("path")?.[0] as fabric.Path | undefined;
             if (!e.target || e.button !== 1 || !pointer || e.isClick || !drawingPath) {
                 pointer = null;
@@ -47,9 +46,14 @@ export default function useCanvasEvent() {
             console.log(drawingPath);
 
             const attr = drawingPath.getBoundingRect(true);
-            // const rect = new fabric.Rect({ left, top });
-            const rect = new fabric.Rect({ ...attr });
             canvas.remove(drawingPath);
+
+            // click 판단
+            if (attr.width < 10 && attr.height < 10) {
+                canvas.renderAll();
+                return;
+            }
+            const rect = new fabric.Rect({ ...attr });
 
             canvas.add(rect);
             canvas.renderAll();
